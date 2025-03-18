@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鼠标悬停显示内容</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        /* 触发区域 */
+        .trigger {
+            width: 150px;
+            height: 100px;
+            background-color: lightblue;
+            text-align: center;
+            line-height: 100px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* 右侧内容容器 */
+        .content-container {
+            display: flex;
+            position: absolute;
+            left: 180px;
+            visibility: hidden;
+        }
+
+        /* 右侧显示的每个 div */
+        .content {
+            width: 150px;
+            height: 100px;
+            margin-left: 10px;
+            background-color: lightcoral;
+            text-align: center;
+            line-height: 100px;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+
+        /* 按钮样式 */
+        .content button {
+            background-color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 触发区域 -->
+        <div class="trigger" onmouseenter="showContent()" onmouseleave="startHideTimer()">悬停这里</div>
+
+        <!-- 右侧内容区域 -->
+        <div class="content-container" onmouseenter="cancelHide()" onmouseleave="startHideTimer()">
+            <div class="content">内容 1 <button onclick="alert('点击按钮1')">按钮1</button></div>
+            <div class="content">内容 2 <button onclick="alert('点击按钮2')">按钮2</button></div>
+            <div class="content">内容 3 <button onclick="alert('点击按钮3')">按钮3</button></div>
+        </div>
+    </div>
+
+    <script>
+        let hideTimer; // 定时器
+
+        function showContent() {
+            const contentContainer = document.querySelector('.content-container');
+            const contents = document.querySelectorAll('.content');
+            contentContainer.style.visibility = 'visible';
+
+            contents.forEach((div, index) => {
+                setTimeout(() => {
+                    div.style.opacity = '1';
+                    div.style.transform = 'translateX(0)';
+                }, index * 300); // 依次从左到右显示，每个间隔 300ms
+            });
+        }
+
+        function startHideTimer() {
+            hideTimer = setTimeout(() => {
+                hideContent();
+            }, 500); // 鼠标离开后 500ms 再隐藏
+        }
+
+        function cancelHide() {
+            clearTimeout(hideTimer); // 取消隐藏
+        }
+
+        function hideContent() {
+            const contentContainer = document.querySelector('.content-container');
+            const contents = document.querySelectorAll('.content');
+
+            contents.forEach((div) => {
+                div.style.opacity = '0';
+                div.style.transform = 'translateX(-20px)';
+            });
+
+            setTimeout(() => {
+                contentContainer.style.visibility = 'hidden';
+            }, 500); // 让动画完成后再隐藏
+        }
+    </script>
+
+</body>
+</html>
